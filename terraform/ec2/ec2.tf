@@ -53,17 +53,17 @@ resource "aws_security_group" "dh_security_group" {
   vpc_id = aws_vpc.dh_vpc.id
 
   ingress {
-    from_port = 80
-    to_port   = 80
+    from_port = 8080
+    to_port   = 8080
     protocol  = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
   }
 }
 
@@ -85,6 +85,7 @@ resource "aws_instance" "dh_instance" {
   subnet_id = aws_subnet.dh_subnet.id
   security_groups = [aws_security_group.dh_security_group.id, aws_security_group.dh_ssh_security_group.id]
   associate_public_ip_address = true
+  key_name = var.key_name
 
   tags = {
     Name = "dh_server"
