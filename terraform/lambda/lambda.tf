@@ -41,6 +41,12 @@ resource "aws_lambda_function" "event_extractor_lambda" {
   filename         = "extractor.zip"
   source_code_hash = filebase64sha256("extractor.zip")
   runtime          = "python3.9"
+
+  environment {
+    variables = {
+      REGION = var.region
+    }
+  }
 }
 
 data "aws_sqs_queue" "sqs_queue" {
