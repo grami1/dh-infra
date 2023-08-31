@@ -42,3 +42,5 @@ tfplan*
 *.tfstate
 *.tfstate.backup
 *.tfstate.*.backup
+
+*.zip
