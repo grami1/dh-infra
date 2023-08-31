@@ -34,6 +34,27 @@ resource "aws_iam_role_policy_attachment" "lambda_sqs_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole"
 }
 
+data "aws_iam_policy_document" "lambda_dynamo_policy_document" {
+  statement {
+    effect  = "Allow"
+    actions = [
+      "dynamodb:*"
+    ]
+    resources = ["arn:aws:dynamodb:${var.region}:${var.account}:table/dh-events"]
+  }
+}
+
+resource "aws_iam_policy" "lambda_dynamo_policy" {
+  name        = "lambda-dynamo-policy"
+  path        = "/"
+  policy      = data.aws_iam_policy_document.lambda_dynamo_policy_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_dynamo_policy_attachment" {
+  role       = aws_iam_role.extractor_lambda_role.id
+  policy_arn = aws_iam_policy.lambda_dynamo_policy.arn
+}
+
 resource "aws_lambda_function" "event_extractor_lambda" {
   function_name    = "dh-event-extractor"
   role             = aws_iam_role.extractor_lambda_role.arn
