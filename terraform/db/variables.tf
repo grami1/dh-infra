@@ -7,9 +7,3 @@ variable "secret_key" {
 variable "region" {
   type = string
 }
-variable "username" {
-  type = string
-}
-variable "password" {
-  type = string
-}
