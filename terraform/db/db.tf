@@ -22,3 +22,25 @@ resource "aws_dynamodb_table" "dh_events_table" {
     type = "S"
   }
 }
+
+resource "aws_iam_user" "dh_core_user" {
+  name = "dh-core-user"
+}
+
+data "aws_iam_policy_document" "dh_core_user_policy_document" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:Query"
+    ]
+    resources = [
+      "arn:aws:dynamodb:${var.region}:${var.account}:table/dh-events",
+    ]
+  }
+}
+
+resource "aws_iam_user_policy" "dh_core_user_policy" {
+  name   = "dh-core-user-policy"
+  user   = aws_iam_user.dh_core_user.name
+  policy = data.aws_iam_policy_document.dh_core_user_policy_document.json
+}
